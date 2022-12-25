@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpCode, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Potate } from './potate.entity';
 
 //responsável por guardar os dados, relacionados a potatos controller ou ao que precisar 
@@ -19,7 +19,14 @@ export class PotatesService {
     }
 
     getPotato(id: string) {
-        return this.potates.find(item => item.id === +id);
+        const potate = this.potates.find(item => item.id === +id);
+        if(!potate) {
+            //throw new HttpException(`Potate ${id} not fount`, HttpStatus.NOT_FOUND);
+            throw new NotFoundException(`Potate ${id} not fount`);
+        }
+        else {
+            return potate;
+        }
     }
 
     createPotato(createPotatoDto: any) {
