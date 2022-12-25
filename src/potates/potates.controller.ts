@@ -1,4 +1,6 @@
 import { Controller, Get, HttpCode, Post, Param , Body, Patch, Delete, Query} from '@nestjs/common';
+import { CreatePotateDto } from './dto/create-potate.dto';
+import { UpdatePotateDto } from './dto/update-potate.dto';
 import { PotatesService } from './potates.service';
 
 @Controller('potates')
@@ -30,13 +32,13 @@ export class PotatesController {
 
     @Post()
     @HttpCode(201)
-    createPotato(@Body() body) {
-        return this.potatesService.createPotato(body);
+    createPotato(@Body() createPotateDTo: CreatePotateDto) {
+        return this.potatesService.createPotato(createPotateDTo);
     }
     
     @Patch(':id')
-    updatePotato(@Param('id') id: string, @Body() body ) {
-        return this.potatesService.updatePotato(id, body);
+    updatePotato(@Param('id') id: string, @Body() updatePotatoDto: UpdatePotateDto ) {
+        return this.potatesService.updatePotato(id, updatePotatoDto);
     }
 
     @Delete(':id')
