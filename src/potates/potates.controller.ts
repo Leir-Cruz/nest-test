@@ -26,7 +26,7 @@ export class PotatesController {
 
     @Get(':id')
     @HttpCode(200)
-    getPotato2(@Param('id') id: string) {
+    getPotato2(@Param('id') id: number) {
         return this.potatesService.getPotato(id);
     }
 
@@ -42,7 +42,7 @@ export class PotatesController {
     }
 
     @Delete(':id')
-    deletePotato(@Param('id') id: string ) {
+    deletePotato(@Param('id') id: number ) {
         return this.potatesService.deletePotato(id);
     }
 }

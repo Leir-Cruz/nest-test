@@ -1,28 +1,25 @@
-import { HttpCode, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Potate } from './potate.entity';
 
 //responsável por guardar os dados, relacionados a potatos controller ou ao que precisar 
 //para utilziar um provider basta usar o constructor na controller
 @Injectable()
 export class PotatesService {
-     //gambiarra para fingir banco de dados
-    private potates: Potate[] = [
-        //criando uma potate inicial
-        {
-            id: 1,
-            price: 10.0
-        },
-    ];
+    constructor(
+        @InjectRepository(Potate)
+        private readonly potateRepository: Repository<Potate>,
+    ) {}
 
     getPotatos() {
-        return this.potates;
+        return this.potateRepository.find();
     }
 
-    getPotato(id: string) {
-        const potate = this.potates.find(item => item.id === +id);
+    async getPotato(id: number) {
+        const potate = await this.potateRepository.findOneBy({id: id});
         if(!potate) {
-            //throw new HttpException(`Potate ${id} not fount`, HttpStatus.NOT_FOUND);
-            throw new NotFoundException(`Potate ${id} not fount`);
+            throw new NotFoundException(`Potate ${id} not found`);
         }
         else {
             return potate;
@@ -30,21 +27,25 @@ export class PotatesService {
     }
 
     createPotato(createPotatoDto: any) {
-        this.potates.push(createPotatoDto);
+        const potate = this.potateRepository.create(createPotatoDto);
+        return this.potateRepository.save(potate); 
     }
 
-    updatePotato(id: string, updatePotatoDto: any) {
-        const existingPotate = this.getPotato(id);
-        if (existingPotate) {
-            //updates potate
+    async updatePotato(id: string, updatePotatoDto: any) {
+        const existingPotate = await this.potateRepository.preload({
+            id: +id,
+            ...updatePotatoDto,
+        });
+        if (!existingPotate) {
+            throw new NotFoundException(`Potate ${id} not fount`);
         }
+        return this.potateRepository.save(existingPotate); 
     }
 
-    deletePotato(id: string) {
-        const potatoIndex = this.potates.findIndex(item => item.id === +id);
-        if (potatoIndex => 0) {
-            this.potates.slice(potatoIndex, 1);
-        }
+    async deletePotato(id: number) {
+        const potate = await this.potateRepository.findOneBy({id: id});
+        return this.potateRepository.remove(potate)
+
     }
 
 }

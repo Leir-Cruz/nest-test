@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Potate { //gambiarra para banco de dados
+export class Potate { 
     @PrimaryGeneratedColumn()
     id: number;
 

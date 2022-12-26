@@ -5,8 +5,8 @@ import { PotatesController } from './potates.controller';
 import { PotatesService } from './potates.service';
 
 @Module({
+    imports: [TypeOrmModule.forFeature([Potate])],
     controllers: [PotatesController], 
-    providers: [PotatesService],
-    imports: [TypeOrmModule.forFeature([Potate])]
+    providers: [PotatesService]
 })
 export class PotatesModule {}
